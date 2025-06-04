@@ -7,4 +7,3 @@ class ShipBrigade:
         return self.ship_name
 
 print(ShipBrigade("Bob"))
-  
