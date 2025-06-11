@@ -84,6 +84,26 @@ def assign_crew_to_ship(ship_name, crew_member):
         print(f"Ship '{ship_name}' does not exist.")
 
 
+def move_to_ship(first_name, last_name, ship_name, new_ship_name, current_fleet):
+    previous_ship = current_fleet[ship_name]
+    new_ship = current_fleet[new_ship_name]
+
+    member_to_move = None
+    for person in previous_ship.crew:
+        if person.first_name == first_name and person.last_name == last_name:
+            member_to_move = person
+            break # Found the person, exit the loop
+
+    if member_to_move:
+        # Remove from the previous ship
+        previous_ship.remove_crew(first_name, last_name)
+        
+        # Add to the new ship - only pass the Person object!
+        new_ship.add_crew(member_to_move) 
+        
+        print(f"Successfully moved {first_name} {last_name} from {ship_name} to {new_ship_name}.")
+    else:
+        print(f"{first_name} {last_name} not found on {ship_name}.")
 
 
 #---- JSON ----
@@ -119,7 +139,11 @@ fleet[current_ship].edit_crew('Bob', 'Dave', 'Robert', 'Davidson', 30, 'Commande
 # Check if the update worked
 print(fleet[current_ship].crew)
 
+add_ship('HMS Lunch')
+move_to_ship('Amani', 'Clarke', current_ship, 'HMS Lunch', fleet)
 
-fleet[current_ship].remove_crew('Amani', 'Clarke')
+print(fleet[current_ship].crew)
+print(fleet['HMS Lunch'].crew)
+
 
 save_fleet_to_json("test.json", fleet)  # Save fleet
