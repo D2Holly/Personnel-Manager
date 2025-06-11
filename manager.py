@@ -1,3 +1,6 @@
+import json
+
+# ---- PERSON CLASS ----
 #Our amazing class!
 class Ships:
     #This will always run when we first create an object (a new ship)
@@ -6,56 +9,103 @@ class Ships:
         self.crew = [] #The empty crew for the new ship
 
     def __repr__(self):
-        return f"The Ship '{self.ship_name}' has been created. \nCurrent crew: {self.crew}" #Fun little print to show the current status of the ship!
+        #Fun little print to show the current status of the ship!
+        return f"{self.crew}" 
 
     #Function to add people to the crew of the ship
     def add_crew(self, ship_member): 
-        #If the person is already in the crew
-        if ship_member in self.crew: 
-            #Tell the user that the person they're adding is already in the crew
-            print(f"{ship_member} is already in {self.ship_name}") 
+        # Loop through crew members to check if a person with the same name exists
+        for member in self.crew:
+        #If the new person's first name and last name match and already exist member's (from crew[])
+            if member.first_name == ship_member.first_name and member.last_name == ship_member.last_name:
+                print(f"{ship_member.first_name} {ship_member.last_name} is already in {self.ship_name}")
+                return  # Exit the function if a match is found
 
-        #If the person is not in the crew
-        elif ship_member not in self.crew: 
-            self.crew.append(ship_member) #add the name to the crew list
-        #if for some reason the previous criteria doesn't trigger
-        else:
-            print("An error has occured")
+        # If no match is found, add the person to the crew
+        self.crew.append(ship_member)
+        print(f"{ship_member.first_name} {ship_member.last_name} has been added to {self.ship_name}!")
 
-    #Function to edit a name of a person in the crew
-    def edit_crew(self, ship_member, new_name):
-        if ship_member in self.crew:
-            print(f'Currently editing: {ship_member}')
-            change = self.crew.index(ship_member)
-            self.crew[change] = new_name
+    
+    #Editing an existing crew member
+    def edit_crew(self, first_name, last_name, new_first_name, new_last_name, new_age, new_role):
+        for member in self.crew:
+            if member.first_name == first_name and member.last_name == last_name:
+                print(f'Currently editing: {member}')
+                
+                # Update attributes
+                member.first_name = new_first_name
+                member.last_name = new_last_name
+                member.age = new_age
+                member.role = new_role
 
-            print(self.crew)
+                print(f'Updated crew member: {member}')
+                return  
 
-    #Function to remove someone from the crew
-    def delete_crew(self, ship_member):
-        if ship_member in self.crew:
-            print(f'Deleting: {ship_member}')
-            delete = self.crew.index(ship_member)
-            self.crew.pop(delete)
-
-            print(self.crew)
+        print(f'{first_name} {last_name} is not in {self.ship_name}!')
 
 
-#Set up a ship
-ship_1 = Ships("Clive")
+# ---- SHIP CLASS ----
+class Person:
+    def __init__(self, first_name, last_name, age, role):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.age = int(age)
+        self.role = role
 
-#Add people to the ship
-ship_1.add_crew('Bob')
-ship_1.add_crew('Steve')
-ship_1.add_crew('Dave')
+    def __repr__(self):
+        return f"{self.first_name} {self.last_name}"
+    
 
-#Show our new ship
-print(ship_1)
-#Show one person from the crew
-print(ship_1.crew[0])
 
-#Lets change Bob's name to Charlie
-ship_1.edit_crew('Bob', 'Charlie')
 
-#Remove Steve
-ship_1.delete_crew('Steve')
+# ---- FLEET MANAGEMENT ----
+# Function to add a new ship to the fleet
+def add_ship(ship_name):
+    if ship_name in fleet:
+        print(f"Ship '{ship_name}' already exists.")
+    else:
+        fleet[ship_name] = Ships(ship_name)
+        print(f"Ship '{ship_name}' has been added to the fleet!")
+        return fleet[ship_name]
+
+# Function to assign a crew member to a ship
+def assign_crew_to_ship(ship_name, crew_member):
+    if ship_name in fleet:
+        fleet[ship_name].add_crew(crew_member)
+    else:
+        print(f"Ship '{ship_name}' does not exist.")
+
+
+
+#---- JSON ----
+
+def save_fleet_to_json(filename, total_fleet):
+    fleet_data = {}
+
+    for ship_name, ship in total_fleet.items():
+        fleet_data[ship_name] = [
+            {"first_name": member.first_name, "last_name": member.last_name,
+             "age": member.age, "role": member.role} for member in ship.crew
+        ]
+
+    with open(filename, 'w') as file:
+        json.dump(fleet_data, file, indent=4)
+
+    print(f"Fleet saved to {filename} successfully!")
+
+
+# ---- EXAMPLE USAGE ----
+fleet = {}
+
+# Example: Adding a crew member
+current_ship = 'HMS Clive'
+add_ship(current_ship)
+assign_crew_to_ship(current_ship, Person('Bob', 'Dave', 12, 'Engineer'))
+
+# Example: Editing the crew member from the fleet
+fleet[current_ship].edit_crew('Bob', 'Dave', 'Robert', 'Davidson', 30, 'Commander')
+
+# Check if the update worked
+print(fleet[current_ship].crew)
+
+save_fleet_to_json("test.json", fleet)  # Save fleet
