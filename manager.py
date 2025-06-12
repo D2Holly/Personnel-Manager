@@ -46,12 +46,17 @@ class Ships:
     
     #Removing a member from the crew
     def remove_crew(self, first_name, last_name):
-        #Create a new crew list excluding the person chosen
-        self.crew = [member for member in self.crew
-                    if not (member.first_name == first_name and member.last_name == last_name)]
+        for member in self.crew:
+            if member.first_name == first_name and member.last_name == last_name:
+                self.crew = [member for member in self.crew
+                            if not (member.first_name == first_name and member.last_name == last_name)]
 
-        print(f'{first_name} {last_name} has been removed from the crew {self.ship_name}')
+                print(f'{first_name} {last_name} has been removed from the crew {self.ship_name}')
+                return
+              
+        print(f'{first_name} {last_name} was not found in {self.ship_name}')
 
+            
 
 
 # ---- SHIP CLASS ----
@@ -128,9 +133,9 @@ def save_fleet_to_json(filename, total_fleet):
              "age": member.age, "role": member.role} for member in ship.crew
         ]
 
-    #open up our json file
+
+    #just chuck our new data into it!
     with open(filename, 'w', encoding='utf-8') as file:
-        #just chuck our new data into it!
         json.dump(fleet_data, file, indent=4)
 
     
