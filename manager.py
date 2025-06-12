@@ -56,18 +56,6 @@ class Ships:
 
             
 
-
-    def remove_crew(self, first_name, last_name):
-        for member in self.crew:
-            if member.first_name == first_name and member.last_name == last_name:
-                self.crew = [member for member in self.crew
-                            if not (member.first_name == first_name and member.last_name == last_name)]
-
-                print(f'{first_name} {last_name} has been removed from the crew {self.ship_name}')
-                return
-        print(f'{first_name} {last_name} was not found in {self.ship_name}')
-
-
 # ---- SHIP CLASS ----
 class Person:
     def __init__(self, first_name, last_name, age, role):
@@ -203,3 +191,5 @@ print(fleet['HMS Lunch'].crew)
 
 
 save_fleet_to_json("test.json", fleet)  # Save fleet
+
+summary_report(fleet)
