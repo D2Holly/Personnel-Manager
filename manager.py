@@ -39,9 +39,22 @@ class Ships:
                 member.role = new_role
 
                 print(f'Updated crew member: {member}')
-                return  
+                return 
 
         print(f'{first_name} {last_name} is not in {self.ship_name}!')
+
+    
+    def remove_crew(self, first_name, last_name):
+        for member in self.crew:
+            if member.first_name == first_name and member.last_name == last_name:
+                self.crew = [member for member in self.crew
+                            if not (member.first_name == first_name and member.last_name == last_name)]
+
+                print(f'{first_name} {last_name} has been removed from the crew {self.ship_name}')
+                return
+        print(f'{first_name} {last_name} was not found in {self.ship_name}')
+
+            
 
 
     def remove_crew(self, first_name, last_name):
@@ -142,8 +155,8 @@ def summary_report(current_fleet):
     print(counted_roles)
 
 
-#---- JSON ----
 
+#---- JSON ----
 def save_fleet_to_json(filename, total_fleet):
     fleet_data = {}
 
@@ -170,11 +183,13 @@ assign_crew_to_ship(current_ship, Person('Amani', 'Clarke', 30, 'Engineer'))
 assign_crew_to_ship(current_ship, Person('Steve', 'Rogers', 45, 'Engineer'))
 
 
+
 # Example: Editing the crew member from the fleet
 fleet[current_ship].edit_crew('Bob', 'Dave', 'Robert', 'Davidson', 30, 'Commander')
 
 # Check if the update worked
 print(fleet[current_ship].crew)
+
 
 # Example: Adding a new ship
 add_ship('HMS Lunch')
