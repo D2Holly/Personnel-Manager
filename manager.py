@@ -39,9 +39,22 @@ class Ships:
                 member.role = new_role
 
                 print(f'Updated crew member: {member}')
-                return  
+                return 
 
         print(f'{first_name} {last_name} is not in {self.ship_name}!')
+
+    
+    def remove_crew(self, first_name, last_name):
+        for member in self.crew:
+            if member.first_name == first_name and member.last_name == last_name:
+                self.crew = [member for member in self.crew
+                            if not (member.first_name == first_name and member.last_name == last_name)]
+
+                print(f'{first_name} {last_name} has been removed from the crew {self.ship_name}')
+                return
+        print(f'{first_name} {last_name} was not found in {self.ship_name}')
+
+            
 
 
 # ---- SHIP CLASS ----
@@ -77,8 +90,8 @@ def assign_crew_to_ship(ship_name, crew_member):
 
 
 
-#---- JSON ----
 
+#---- JSON ----
 def save_fleet_to_json(filename, total_fleet):
     fleet_data = {}
 
@@ -88,7 +101,7 @@ def save_fleet_to_json(filename, total_fleet):
              "age": member.age, "role": member.role} for member in ship.crew
         ]
 
-    with open(filename, 'w') as file:
+    with open(filename, 'w', encoding='utf-8') as file:
         json.dump(fleet_data, file, indent=4)
 
     print(f"Fleet saved to {filename} successfully!")
@@ -101,11 +114,16 @@ fleet = {}
 current_ship = 'HMS Clive'
 add_ship(current_ship)
 assign_crew_to_ship(current_ship, Person('Bob', 'Dave', 12, 'Engineer'))
+assign_crew_to_ship(current_ship, Person('Amani', 'Clarke', 24, 'Engineer'))
+
 
 # Example: Editing the crew member from the fleet
 fleet[current_ship].edit_crew('Bob', 'Dave', 'Robert', 'Davidson', 30, 'Commander')
 
 # Check if the update worked
 print(fleet[current_ship].crew)
+
+
+fleet[current_ship].remove_crew('Amani', 'Clarke')
 
 save_fleet_to_json("test.json", fleet)  # Save fleet
