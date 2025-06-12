@@ -4,16 +4,16 @@ import json
 #Our amazing class!
 class Ships:
     #This will always run when we first create an object (a new ship)
-    def __init__(self, ship_name): 
+    def __init__(self, ship_name):
         self.ship_name = ship_name #What the ship will be called (unless changed)
         self.crew = [] #The empty crew for the new ship
 
     def __repr__(self):
         #Fun little print to show the current status of the ship!
-        return f"{self.crew}" 
+        return f"{self.crew}"
 
     #Function to add people to the crew of the ship
-    def add_crew(self, ship_member): 
+    def add_crew(self, ship_member):
         # Loop through crew members to check if a person with the same name exists
         for member in self.crew:
         #If the new person's first name and last name match and already exist member's (from crew[])
@@ -44,7 +44,9 @@ class Ships:
         print(f'{first_name} {last_name} is not in {self.ship_name}!')
 
     
+    #Removing a member from the crew
     def remove_crew(self, first_name, last_name):
+        #Create a new crew list excluding the person chosen
         self.crew = [member for member in self.crew
                     if not (member.first_name == first_name and member.last_name == last_name)]
 
@@ -83,42 +85,55 @@ def assign_crew_to_ship(ship_name, crew_member):
     else:
         print(f"Ship '{ship_name}' does not exist.")
 
-
+#Function to move a crew member to a different ship
 def move_to_ship(first_name, last_name, ship_name, new_ship_name, current_fleet):
+    #get current ship object
     previous_ship = current_fleet[ship_name]
+    #get new ship object
     new_ship = current_fleet[new_ship_name]
 
+    #to see if the member exists
     member_to_move = None
+    #for every person in the current ship
     for person in previous_ship.crew:
+        #if we find the person we want
         if person.first_name == first_name and person.last_name == last_name:
             member_to_move = person
             break # Found the person, exit the loop
 
+    #if member is no longer None
     if member_to_move:
         # Remove from the previous ship
         previous_ship.remove_crew(first_name, last_name)
         
         # Add to the new ship - only pass the Person object!
-        new_ship.add_crew(member_to_move) 
+        new_ship.add_crew(member_to_move)
         
         print(f"Successfully moved {first_name} {last_name} from {ship_name} to {new_ship_name}.")
     else:
         print(f"{first_name} {last_name} not found on {ship_name}.")
 
 
-#---- JSON ----
 
+#---- JSON ----
 def save_fleet_to_json(filename, total_fleet):
     fleet_data = {}
 
+    #for every ship in fleet
     for ship_name, ship in total_fleet.items():
+        #get data from each ship object
+        #pop it into a dictionary with the shipname as the new data
         fleet_data[ship_name] = [
             {"first_name": member.first_name, "last_name": member.last_name,
              "age": member.age, "role": member.role} for member in ship.crew
         ]
 
-    with open(filename, 'w') as file:
+    #open up our json file
+    with open(filename, 'w', encoding='utf-8') as file:
+        #just chuck our new data into it!
         json.dump(fleet_data, file, indent=4)
+
+    
 
     print(f"Fleet saved to {filename} successfully!")
 
@@ -130,7 +145,8 @@ fleet = {}
 current_ship = 'HMS Clive'
 add_ship(current_ship)
 assign_crew_to_ship(current_ship, Person('Bob', 'Dave', 12, 'Engineer'))
-assign_crew_to_ship(current_ship, Person('Amani', 'Clarke', 24, 'Engineer'))
+assign_crew_to_ship(current_ship, Person('Amani', 'Clarke', 30, 'Engineer'))
+assign_crew_to_ship(current_ship, Person('Steve', 'Rogers', 45, 'Engineer'))
 
 
 # Example: Editing the crew member from the fleet
@@ -139,9 +155,13 @@ fleet[current_ship].edit_crew('Bob', 'Dave', 'Robert', 'Davidson', 30, 'Commande
 # Check if the update worked
 print(fleet[current_ship].crew)
 
+# Example: Adding a new ship
 add_ship('HMS Lunch')
+
+#Example: Moving Member from one ship to another
 move_to_ship('Amani', 'Clarke', current_ship, 'HMS Lunch', fleet)
 
+# Check if the update worked
 print(fleet[current_ship].crew)
 print(fleet['HMS Lunch'].crew)
 
