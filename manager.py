@@ -77,6 +77,32 @@ def assign_crew_to_ship(ship_name, crew_member):
 
 
 
+#Generate a summary report
+def summary_report(current_fleet):
+    print("\n\n##### Summary Report ######")
+    number_of_ships = len(current_fleet)
+    total_crew = 0
+    roles = []
+    counted_roles = {}
+
+    print(f'Current number of Ships in the fleet: {number_of_ships}')
+
+    for ship in current_fleet:
+        crew_count = len(current_fleet[ship].crew)
+        print(f'Number of crew in {ship}: {crew_count}')
+        for person in current_fleet[ship].crew:
+            total_crew += 1
+            roles.append(person.role)
+
+    print(f'Total number of crew across the fleet: {total_crew}')
+
+    for role in roles:
+        counted_roles[role] = counted_roles.get(role, 0) + 1
+
+    print("\nTypes of roles across the fleet, and amount of each:")
+    print(counted_roles)
+
+
 #---- JSON ----
 
 def save_fleet_to_json(filename, total_fleet):
@@ -109,3 +135,5 @@ fleet[current_ship].edit_crew('Bob', 'Dave', 'Robert', 'Davidson', 30, 'Commande
 print(fleet[current_ship].crew)
 
 save_fleet_to_json("test.json", fleet)  # Save fleet
+
+summary_report(fleet)
